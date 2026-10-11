@@ -8,7 +8,7 @@ const { WebSocketServer } = require('ws');
 const PORT = process.env.PORT || 3000;
 const PAGE = fs.readFileSync(path.join(__dirname, 'public', 'index.html'));
 const MAX_PLAYERS = 16;
-const MAX_MSG_BYTES = 16 * 1024;
+const MAX_MSG_BYTES = 48 * 1024;
 
 const server = http.createServer((req, res) => {
   const url = req.url.split('?')[0];
@@ -26,7 +26,7 @@ const rooms = new Map(); // room code -> Set of sockets
 // a player's profile (name, drawn avatar, settings) is capped so one player can't flood the room
 function cleanPres(p) {
   if (!p || typeof p !== 'object' || Array.isArray(p)) return {};
-  try { if (JSON.stringify(p).length > 15000) return { name: typeof p.name === 'string' ? p.name.slice(0, 16) : 'Player' }; } catch { return {}; }
+  try { if (JSON.stringify(p).length > 30000) return { name: typeof p.name === 'string' ? p.name.slice(0, 16) : 'Player' }; } catch { return {}; }
   return p;
 }
 function roster(room) {
