@@ -294,7 +294,7 @@ button{cursor:pointer}
       </div>
       <div class="rules">
         <span><b>Scoring:</b> each wrong guess −1 · correct guess +20 · the drawer gets +20 for every correct guess.</span>
-        <span><b>Drawer power-ups:</b> pause the spin for 5 s (5 pts) · show how many letters (3 pts) · show the first letter (3 pts).</span>
+        <span><b>Drawer power-ups:</b> pause the spin for 20 s (5 pts) · show how many letters (3 pts) · show the first letter (3 pts).</span>
         <span>Everyone starts with 30 points. The word starts fully hidden. Scores can go below zero.</span>
       </div>
       <button class="btn" id="startBtn" type="button">Start game</button>
@@ -322,7 +322,7 @@ button{cursor:pointer}
         <button class="tbtn warn" id="endBtn" type="button">End my turn</button>
         <div class="shop" id="shop">
           <span class="bal">Your points <b id="shopBal">0</b></span>
-          <button class="pu" id="puPause" type="button">Pause spin 5s <span class="cost">5</span></button>
+          <button class="pu" id="puPause" type="button">Pause spin 20s <span class="cost">5</span></button>
           <button class="pu" id="puLen" type="button">Show letter count <span class="cost">3</span></button>
           <button class="pu" id="puFirst" type="button">Show first letter <span class="cost">3</span></button>
         </div>
@@ -357,8 +357,8 @@ const WORDS = {
 const CHOOSE_MS = 15000, REVEAL_MS = 5500;
 const GENRES = { anime:'Anime', movies:'Movies', animemovies:'Anime & Movies', bl:'BL (Boys\u2019 Love)', everyday:'Everyday things', sea:'Southeast Asia', mix:'Everything mixed', custom:'Our own words' };
 const PTS = { wrong:1, correct:20, drawer:20 };
-const SHOP = { pause:{cost:5, label:'paused the spin for 5 seconds'}, len:{cost:3, label:'revealed the number of letters'}, first:{cost:3, label:'revealed the first letter'} };
-const PAUSE_MS = 5000;
+const SHOP = { pause:{cost:5, label:'paused the spin for 20 seconds'}, len:{cost:3, label:'revealed the number of letters'}, first:{cost:3, label:'revealed the first letter'} };
+const PAUSE_MS = 20000;
 
 // ---------- small helpers
 const norm = s => String(s||'').toLowerCase().normalize('NFKD').replace(/[^\p{L}\p{N}]/gu,'');
