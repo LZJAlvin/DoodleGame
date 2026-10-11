@@ -23,6 +23,12 @@ const server = http.createServer((req, res) => {
 const wss = new WebSocketServer({ server, path: '/ws', maxPayload: MAX_MSG_BYTES });
 const rooms = new Map(); // room code -> Set of sockets
 
+// a player's profile (name, drawn avatar, settings) is capped so one player can't flood the room
+function cleanPres(p) {
+  if (!p || typeof p !== 'object' || Array.isArray(p)) return {};
+  try { if (JSON.stringify(p).length > 15000) return { name: typeof p.name === 'string' ? p.name.slice(0, 16) : 'Player' }; } catch { return {}; }
+  return p;
+}
 function roster(room) {
   const r = {};
   for (const c of room) if (c.label) r[c.label] = c.pres || {};
@@ -54,11 +60,11 @@ wss.on('connection', (ws, req) => {
     if (m.t === 'hello' && typeof m.label === 'string' && /^[a-z0-9]{1,20}$/i.test(m.label)) {
       // a reconnecting player keeps the same label; drop any stale socket using it
       for (const c of room) if (c !== ws && c.label === m.label) { room.delete(c); try { c.terminate(); } catch {} }
-      ws.label = m.label; ws.pres = (m.pres && typeof m.pres === 'object') ? m.pres : {};
+      ws.label = m.label; ws.pres = cleanPres(m.pres);
       return broadcast(room, { t: 'roster', roster: roster(room) });
     }
     if (!ws.label) return;
-    if (m.t === 'pres') { ws.pres = (m.pres && typeof m.pres === 'object') ? m.pres : {}; return broadcast(room, { t: 'roster', roster: roster(room) }); }
+    if (m.t === 'pres') { ws.pres = cleanPres(m.pres); return broadcast(room, { t: 'roster', roster: roster(room) }); }
     if (m.t === 'ev' && typeof m.topic === 'string' && /^[a-z]{1,16}$/.test(m.topic)) {
       return broadcast(room, { t: 'ev', from: ws.label, topic: m.topic, data: m.data });
     }
